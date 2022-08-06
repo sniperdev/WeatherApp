@@ -3,7 +3,7 @@ import './App.css';
 function App() {
   return (
     <div>
-      Test
+      <span className="text-base">TEST</span>
     </div>
   );
 }
