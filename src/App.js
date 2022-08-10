@@ -2,6 +2,7 @@ import './App.css';
 import React from "react";
 
 import { WiDaySunny } from "weather-icons-react";
+import WeekWeather from "./components/WeekWeather";
 
 class App extends React.Component {
   state={
@@ -32,11 +33,6 @@ class App extends React.Component {
 
   render(){
     return(
-      // <div>
-      //   <h1>Chmury: {this.state.chmury}</h1>
-      //   <h1>Temperatura: {this.state.temp}</h1>
-      //   <h1>Wiatr: {this.state.wiatr}</h1>
-      // </div>
       <section className={"w-screen h-screen grid grid-cols-3 grid-rows-2"}>
         <section className={"row-span-2"}>
           <div>
@@ -53,7 +49,12 @@ class App extends React.Component {
             </div>
           </div>
         </section>
-        <section className={"col-span-2"}></section>
+        <section className={"col-span-2 flex bg-neutral-300 rounded-xl"}>
+          <WeekWeather date={"10/08/22"} temp={this.state.temp} feelsLike={this.state.feelsLike} main={this.state.main}/>
+          <WeekWeather date={"10/08/22"} temp={this.state.temp} feelsLike={this.state.feelsLike} main={this.state.main}/>
+          <WeekWeather date={"10/08/22"} temp={this.state.temp} feelsLike={this.state.feelsLike} main={this.state.main}/>
+          <WeekWeather date={"10/08/22"} temp={this.state.temp} feelsLike={this.state.feelsLike} main={this.state.main}/>
+        </section>
         <section className={"col-span-2"}></section>
       </section>
     )
