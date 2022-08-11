@@ -1,13 +1,16 @@
 import './App.css';
 import React from "react";
+import WeatherInNextHours from './components/WeatherInNextHours'
 
-import {WiCelsius} from "weather-icons-react";
+import {WiCelsius, WiCloudy, WiDayRain, WiDayShowers, WiDaySunny, WiDayThunderstorm} from "weather-icons-react";
+
 
 class App extends React.Component {
   state={
     city:'Poznan',
     date:'',
-    chmury:'',
+    hours:'',
+    main:'',
     temp:'',
     wiatr:'',
     feelsLike:'',
@@ -17,9 +20,19 @@ class App extends React.Component {
     fetch('https://api.openweathermap.org/data/2.5/forecast?q=oborniki&exclude=daily&appid=0108d9940c3664c932faecc5a0ef2ab8&units=metric&lang=pl')
       .then(response => response.json())
       .then(json => {
+        console.log(json);
+        let tempArr=[];
+        let mainArr=[];
+        for(let i=0;i<7;i++){
+          tempArr.push(Math.round(json.list[i].main.temp))
+          mainArr.push(json.list[i].weather[0].main)
+        }
+        console.log(mainArr)
+
+        console.log(tempArr);
         this.setState({
-          main: json.list[0].weather[0].main,
-          temp: json.list[0].main.temp,
+          main: mainArr,
+          temp: tempArr,
           wiatr: json.list[0].wind.speed,
           feelsLike: json.list[0].main.feels_like,
         })})
@@ -31,6 +44,15 @@ class App extends React.Component {
     const hours = currentTime.getHours();
     const minutes = currentTime.getMinutes();
 
+    let hoursArr;
+    hoursArr=[];
+    for(let i=0;i<7;i++){
+      if(hours+(i*3)>24){
+        let zmienna = hours-24;
+        hoursArr.push(((zmienna)+(3*i))<10 ? '0'+(zmienna+(3*i)):zmienna+(3*i))
+      }
+      else hoursArr.push(hours+(3*i))
+    }
     const day = currentTime.getDay();
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -39,26 +61,27 @@ class App extends React.Component {
 
     this.setState({
       date: `${hours}:${minutes} - ${days[day]}, ${currentTime.getDate()} ${months[month]}`,
+      hours: hoursArr,
     })
   }
 
 
-  // renderSwitch(){
-  //   let setSize= 40;
-  //   switch({
-  //     case 'Clear':
-  //       return <WiDaySunny size={setSize}/>
-  //     case 'Clouds':
-  //       return <WiCloudy size={setSize}/>
-  //     case 'Rain':
-  //       return <WiDayRain size={setSize}/>
-  //     case 'Drizzle':
-  //       return <WiDayShowers size={setSize}/>
-  //     case 'Thunderstorm':
-  //       return <WiDayThunderstorm size={setSize}/>
-  //     default:
-  //       return <WiDaySunny size={setSize}/>
-  //   }}
+  renderSwitch(main){
+    let setSize= 40;
+    switch(main){
+      case 'Clear':
+        return <WiDaySunny size={setSize}/>
+      case 'Clouds':
+        return <WiCloudy size={setSize}/>
+      case 'Rain':
+        return <WiDayRain size={setSize}/>
+      case 'Drizzle':
+        return <WiDayShowers size={setSize}/>
+      case 'Thunderstorm':
+        return <WiDayThunderstorm size={setSize}/>
+      default:
+        return <WiDaySunny size={setSize}/>
+    }}
 
 
   componentDidMount() {
@@ -80,17 +103,20 @@ class App extends React.Component {
               <h1>{this.state.date}</h1>
             </div>
             <div>
-              <h1>Ikona</h1>
-              <h1>Jaka pogoda</h1>
+              {this.renderSwitch(this.state.main)}
+              <h1>{this.state.main}</h1>
             </div>
           </section>
           <section>
             <h1>Hourly forecast</h1>
             <section className={"flex"}>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
+              <WeatherInNextHours icon={this.renderSwitch(this.state.main[0])} time={this.state.hours[0]} temp={this.state.temp[0]}/>
+              <WeatherInNextHours icon={this.renderSwitch(this.state.main[1])} time={this.state.hours[1]} temp={this.state.temp[1]}/>
+              <WeatherInNextHours icon={this.renderSwitch(this.state.main[2])} time={this.state.hours[2]} temp={this.state.temp[2]}/>
+              <WeatherInNextHours icon={this.renderSwitch(this.state.main[3])} time={this.state.hours[3]} temp={this.state.temp[3]}/>
+              <WeatherInNextHours icon={this.renderSwitch(this.state.main[4])} time={this.state.hours[4]} temp={this.state.temp[4]}/>
+              <WeatherInNextHours icon={this.renderSwitch(this.state.main[5])} time={this.state.hours[5]} temp={this.state.temp[5]}/>
+              <WeatherInNextHours icon={this.renderSwitch(this.state.main[6])} time={this.state.hours[6]} temp={this.state.temp[6]}/>
             </section>
           </section>
         </section>
