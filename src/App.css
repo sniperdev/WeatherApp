@@ -1,0 +1,7 @@
+.backgroundImg{
+  background-image: url(https://pixabay.com/get/g61ac0841f3d72343e6e4290aaca1a0c33c40bbdb08c9786e47057b8ea1fb13089d8d2584b1002ff9efbfa6b29d0e91dc63a82a47aa3bab750addb9ca6346ab76aed14d33f3e5ab2ae175a123b7d96325_1920.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+}
