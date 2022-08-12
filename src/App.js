@@ -4,11 +4,11 @@ import WeatherInNextHours from './components/WeatherInNextHours'
 
 import {WiCelsius, WiCloudy, WiDayRain, WiDayShowers, WiDaySunny, WiDayThunderstorm} from "weather-icons-react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
+import {faArrowDown, faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons'
 
 class App extends React.Component {
   state={
-    city:'Poznan',
+    city:'Poznań',
     date:'',
     hours:'',
     main:'',
@@ -20,7 +20,7 @@ class App extends React.Component {
   }
 
   fetchWeather=()=>{
-    fetch('https://api.openweathermap.org/data/2.5/forecast?q=oborniki&exclude=daily&appid=0108d9940c3664c932faecc5a0ef2ab8&units=metric&lang=pl')
+    fetch('https://api.openweathermap.org/data/2.5/forecast?exclude=daily&appid=0108d9940c3664c932faecc5a0ef2ab8&units=metric&lang=pl&q='+this.state.city)
       .then(response => response.json())
       .then(json => {
         console.log(json);
@@ -30,9 +30,6 @@ class App extends React.Component {
           tempArr.push(Math.round(json.list[i].main.temp))
           mainArr.push(json.list[i].weather[0].main)
         }
-        console.log(mainArr)
-
-        console.log(tempArr);
         this.setState({
           main: mainArr,
           temp: tempArr,
@@ -41,6 +38,18 @@ class App extends React.Component {
           humidity:json.list[0].main.humidity,
           pressure: json.list[0].main.pressure,
         })})
+  }
+  changeStateCity=(e)=>{
+    this.setState({city: e.target.value})
+  }
+  onSubmitClear=(e)=>{
+    e.target.value="";
+    console.log(e.target.value);
+  }
+  handleSubmit=(event)=>{
+    event.preventDefault();
+    this.fetchWeather();
+    event.target.reset();
   }
 
   getDayName(){
@@ -98,6 +107,12 @@ class App extends React.Component {
     return(
       <section className={"text-white backgroundImg font-mono font-bold lg:flex"}>
         <section className={"min-h-screen flex flex-col justify-end lg:w-2/3"}>
+          <form onSubmit={this.handleSubmit} className={"grow text-center m-4"}>
+            <label>
+              <input type="text" className={"text-black"} onChange={this.changeStateCity}/>
+            </label>
+            <button type="submit"><FontAwesomeIcon icon={faMagnifyingGlass} size={"lg"} className="mx-2"/></button>
+          </form>
           <section className={"flex flex-col text-center"}>
             <div className="self-center">
               <h1 className="text-lg">{this.state.main[0]}</h1>
@@ -113,7 +128,7 @@ class App extends React.Component {
             </div>
           </section>
           <section>
-            <h1>Hourly forecast</h1>
+            <h1 className="mx-4">Hourly forecast</h1>
             <section className={"flex justify-around"}>
               <WeatherInNextHours icon={this.renderSwitch(this.state.main[0])} time={this.state.hours[0]} temp={this.state.temp[0]}/>
               <WeatherInNextHours icon={this.renderSwitch(this.state.main[1])} time={this.state.hours[1]} temp={this.state.temp[1]}/>
