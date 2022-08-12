@@ -1,9 +1,16 @@
+import {WiDegrees} from "weather-icons-react";
+import React from "react";
+
 function WeatherInNextHours({icon,time,temp}) {
   return(
-    <div>
-      <span>{time}</span>
+    <div className="flex flex-col">
+      <span className="text-center">{time}</span>
       {icon}
-      <span>{temp}</span>
+      <div className="text-center flex justify-center relative">
+        <span className={"leading-10 relative"}>{temp}</span>
+        <WiDegrees size={40} className={"absolute left-3"}/>
+      </div>
+
     </div>)
 }
 

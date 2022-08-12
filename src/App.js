@@ -3,7 +3,8 @@ import React from "react";
 import WeatherInNextHours from './components/WeatherInNextHours'
 
 import {WiCelsius, WiCloudy, WiDayRain, WiDayShowers, WiDaySunny, WiDayThunderstorm} from "weather-icons-react";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
 
 class App extends React.Component {
   state={
@@ -12,8 +13,10 @@ class App extends React.Component {
     hours:'',
     main:'',
     temp:'',
-    wiatr:'',
+    wind:'',
     feelsLike:'',
+    humidity:'',
+    pressure:'',
   }
 
   fetchWeather=()=>{
@@ -33,8 +36,10 @@ class App extends React.Component {
         this.setState({
           main: mainArr,
           temp: tempArr,
-          wiatr: json.list[0].wind.speed,
+          wind: json.list[0].wind.speed,
           feelsLike: json.list[0].main.feels_like,
+          humidity:json.list[0].main.humidity,
+          pressure: json.list[0].main.pressure,
         })})
   }
 
@@ -60,14 +65,14 @@ class App extends React.Component {
     const month = currentTime.getMonth();
 
     this.setState({
-      date: `${hours}:${minutes} - ${days[day]}, ${currentTime.getDate()} ${months[month]}`,
+      date: `${hours}:${minutes<10?'0'+minutes:minutes} - ${days[day]}, ${currentTime.getDate()} ${months[month]}`,
       hours: hoursArr,
     })
   }
 
 
   renderSwitch(main){
-    let setSize= 40;
+    let setSize = 40;
     switch(main){
       case 'Clear':
         return <WiDaySunny size={setSize}/>
@@ -91,25 +96,25 @@ class App extends React.Component {
 
   render(){
     return(
-      <section className={"h-screen flex text-white backgroundImg font-mono"}>
-        <section className={"self-end w-2/3"}>
-          <section className={"flex justify-center"}>
-            <div>
-              <span>{Math.round(this.state.temp)}</span>
+      <section className={"text-white backgroundImg font-mono font-bold lg:flex"}>
+        <section className={"min-h-screen flex flex-col justify-end lg:w-2/3"}>
+          <section className={"flex flex-col text-center"}>
+            <div className="self-center">
+              <h1 className="text-lg">{this.state.main[0]}</h1>
+              {this.renderSwitch(this.state.main[0])}
+            </div>
+            <div className="mb-20">
+              <span>{this.state.temp[0]}</span>
               <WiCelsius size={30} className={"inline"}/>
             </div>
-            <div>
+            <div className="mb-10">
               <h1>{this.state.city}</h1>
               <h1>{this.state.date}</h1>
-            </div>
-            <div>
-              {this.renderSwitch(this.state.main)}
-              <h1>{this.state.main}</h1>
             </div>
           </section>
           <section>
             <h1>Hourly forecast</h1>
-            <section className={"flex"}>
+            <section className={"flex justify-around"}>
               <WeatherInNextHours icon={this.renderSwitch(this.state.main[0])} time={this.state.hours[0]} temp={this.state.temp[0]}/>
               <WeatherInNextHours icon={this.renderSwitch(this.state.main[1])} time={this.state.hours[1]} temp={this.state.temp[1]}/>
               <WeatherInNextHours icon={this.renderSwitch(this.state.main[2])} time={this.state.hours[2]} temp={this.state.temp[2]}/>
@@ -119,9 +124,20 @@ class App extends React.Component {
               <WeatherInNextHours icon={this.renderSwitch(this.state.main[6])} time={this.state.hours[6]} temp={this.state.temp[6]}/>
             </section>
           </section>
+          <section className={"self-center mb-16 lg:invisible"}>
+            <FontAwesomeIcon icon={faArrowDown} size={"lg"} beat/>
+          </section>
         </section>
-        <section className={"w-1/3"}>
-          MIASTO I INNE
+        <section className={"p-4 h-1/2 bg-gray-800 lg:w-1/3 lg:h-screen"}>
+          <div className="border-b-2 border-b-slate-500">
+            <h1>Weather Details</h1>
+          </div>
+          <div className="m-2 grid grid-cols-2">
+            <h1 className={"my-2"}>Wind</h1><p className={"my-2"}>{this.state.wind}km/h</p>
+            <h1 className={"my-2"}>Feels Like</h1><p className={"my-2"}>{Math.round(this.state.feelsLike)}<WiCelsius size={32} className={"inline"}/></p>
+            <h1 className={"my-2"}>Humidity</h1><p className={"my-2"}>{this.state.humidity}%</p>
+            <h1 className={"my-2"}>Pressure</h1><p className={"my-2"}>{this.state.pressure}hPa</p>
+          </div>
         </section>
       </section>
 
